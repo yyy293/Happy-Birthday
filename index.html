@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Happy Birthday Janah 🎆</title>
+<title>Happy Birthday Janah</title>
 
 <style>
   body {
@@ -36,7 +36,7 @@
 
   h1 {
     font-size: 3em;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     letter-spacing: 4px;
   }
 
@@ -51,14 +51,9 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  p {
-    font-size: 1.2em;
-    margin-bottom: 20px;
-  }
-
   .countdown {
     font-size: 1.4em;
-    margin-top: 15px;
+    margin-top: 10px;
     letter-spacing: 2px;
   }
 
@@ -75,27 +70,18 @@
 
 <div class="card">
   <h1 id="name"></h1>
-
-  <p>
-    May your day shine brighter than fireworks ✨  
-    and every moment be unforgettable 💖
-  </p>
-
   <div class="countdown" id="countdown"></div>
-  <small>(Tap anywhere to enable sound 🎶)</small>
 </div>
 
 <audio id="song" src="happy-birthday-janah.mp3" autoplay muted loop></audio>
 
 <script>
-/* Enable sound on first interaction */
 document.body.addEventListener("click", () => {
   const song = document.getElementById("song");
   song.muted = false;
   song.play();
 }, { once: true });
 
-/* Name animation */
 const nameText = "JANAH";
 const nameEl = document.getElementById("name");
 
@@ -107,8 +93,7 @@ const nameEl = document.getElementById("name");
   nameEl.appendChild(span);
 });
 
-/* 5-minute countdown */
-let remaining = 5 * 60; // 5 minutes in seconds
+let remaining = 5 * 60;
 const countdownEl = document.getElementById("countdown");
 
 const timer = setInterval(() => {
@@ -120,13 +105,12 @@ const timer = setInterval(() => {
 
   if (remaining <= 0) {
     clearInterval(timer);
-    countdownEl.innerHTML = "🎉 HAPPY BIRTHDAY JANAH! 🎉";
+    countdownEl.textContent = "HAPPY BIRTHDAY JANAH";
   }
 
   remaining--;
 }, 1000);
 
-/* Fireworks */
 const canvas = document.getElementById("fireworks");
 const ctx = canvas.getContext("2d");
 
