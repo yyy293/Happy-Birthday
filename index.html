@@ -105,7 +105,7 @@ const messageEl = document.getElementById("message");
 });
 
 // Countdown timer: 1 minute
-let remaining = 1 * 60;
+let remaining = 60; // 60 seconds = 1 minute
 const countdownEl = document.getElementById("countdown");
 
 const canvas = document.getElementById("fireworks");
@@ -140,7 +140,7 @@ function Firework() {
   }
 }
 
-// Sparkler particle with shimmer
+// Sparkler particle
 function Sparkle() {
   const card = document.querySelector('.card');
   const rect = card.getBoundingClientRect();
@@ -210,17 +210,17 @@ animate();
 
 // Countdown
 const timer = setInterval(() => {
-  const minutes = Math.floor(remaining/60);
-  const seconds = remaining%60;
+  const minutes = Math.floor(remaining / 60);
+  const seconds = remaining % 60;
   countdownEl.textContent = `${minutes}:${seconds.toString().padStart(2,"0")}`;
 
-  if(remaining<=0){
+  if (remaining <= 0) {
     clearInterval(timer);
     countdownEl.textContent = "HAPPY BIRTHDAY JANAH";
 
-    // Animate message letter by letter
+    // Animate message letters
     messageEl.textContent = "";
-    [...messageText].forEach((char,i)=>{
+    [...messageText].forEach((char, i) => {
       const span = document.createElement("span");
       span.textContent = char;
       span.className = "letter";
@@ -236,11 +236,11 @@ const timer = setInterval(() => {
     // Launch confetti and sparkles
     launchConfetti(8000);
     animateSparkles = true;
-    setTimeout(()=>animateSparkles=false,8000);
+    setTimeout(() => animateSparkles = false, 8000);
   }
 
   remaining--;
-},1000);
+}, 1000);
 
 // Confetti effect
 function launchConfetti(duration){
