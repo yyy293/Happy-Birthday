@@ -64,11 +64,6 @@
     letter-spacing: 1px;
   }
 
-  .glow {
-    color: #fff7aa;
-    text-shadow: 0 0 5px #fff7aa, 0 0 10px #fff7aa, 0 0 15px #ffd700;
-  }
-
   @keyframes fadeIn {
     from { opacity: 0; transform: scale(0.9); }
     to { opacity: 1; transform: scale(1); }
@@ -197,6 +192,13 @@ function animate() {
     if(sparkles.length<100) for(let i=0;i<3;i++) sparkles.push(new Sparkle());
   }
 
+  // Flicker message letters independently
+  document.querySelectorAll('.message span').forEach(letter => {
+    const flicker = 0.5 + Math.random()*0.5;
+    letter.style.color = `rgba(255, 247, 170, ${flicker})`;
+    letter.style.textShadow = `0 0 ${5*flicker}px #fff7aa, 0 0 ${10*flicker}px #fff7aa, 0 0 ${15*flicker}px #ffd700`;
+  });
+
   requestAnimationFrame(animate);
 }
 
@@ -216,12 +218,12 @@ const timer = setInterval(() => {
     clearInterval(timer);
     countdownEl.textContent = "HAPPY BIRTHDAY JANAH";
 
-    // Animate message letter by letter with glow
+    // Animate message letter by letter
     messageEl.textContent = "";
     [...messageText].forEach((char,i)=>{
       const span = document.createElement("span");
       span.textContent = char;
-      span.className = "letter glow";
+      span.className = "letter";
       span.style.animation = `pop 0.05s forwards`;
       span.style.animationDelay = `${i*0.05}s`;
       messageEl.appendChild(span);
