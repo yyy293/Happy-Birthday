@@ -81,13 +81,14 @@
   <div class="message" id="message"></div>
 </div>
 
-<audio id="song" src="happy-birthday-469282.mp3" autoplay muted loop></audio>
+<audio id="song" src="happy-birthday-469282.mp3" loop></audio>
 
 <script>
+const song = document.getElementById("song");
+
+// Play audio after first click
 document.body.addEventListener("click", () => {
-  const song = document.getElementById("song");
-  song.muted = false;
-  song.play();
+    song.play().catch(err => console.log("Audio play blocked:", err));
 }, { once: true });
 
 const nameText = "JANAH";
@@ -105,7 +106,7 @@ const messageEl = document.getElementById("message");
 });
 
 // Countdown timer: 1 minute
-let remaining = 60; // 60 seconds
+let remaining = 60;
 const countdownEl = document.getElementById("countdown");
 
 const canvas = document.getElementById("fireworks");
@@ -218,7 +219,7 @@ const timer = setInterval(() => {
     clearInterval(timer);
     countdownEl.textContent = "HAPPY BIRTHDAY JANAH";
 
-    // Animate message letters for birthday text with spaces
+    // Animate message letters with proper spacing
     messageEl.textContent = "";
     [...messageText].forEach((char, i) => {
       const span = document.createElement("span");
@@ -226,7 +227,8 @@ const timer = setInterval(() => {
       span.style.animation = `pop 0.05s forwards`;
       span.style.animationDelay = `${i*0.05}s`;
       if (char === " ") {
-        span.innerHTML = "&nbsp;"; // keep spaces
+        span.innerHTML = "&nbsp;";
+        span.style.marginRight = "0.2em"; // keep words separated
       } else {
         span.textContent = char;
       }
@@ -235,7 +237,7 @@ const timer = setInterval(() => {
 
     // Stop fireworks and song
     animateFireworks = false;
-    document.getElementById("song").pause();
+    song.pause();
 
     // Launch confetti and sparkles
     launchConfetti(8000);
