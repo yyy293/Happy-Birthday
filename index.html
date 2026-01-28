@@ -93,23 +93,9 @@ const nameEl = document.getElementById("name");
   nameEl.appendChild(span);
 });
 
+// Timer set to 2 minutes
 let remaining = 2 * 60;
 const countdownEl = document.getElementById("countdown");
-
-const timer = setInterval(() => {
-  const minutes = Math.floor(remaining / 60);
-  const seconds = remaining % 60;
-
-  countdownEl.textContent =
-    `${minutes}:${seconds.toString().padStart(2, "0")}`;
-
-  if (remaining <= 0) {
-    clearInterval(timer);
-    countdownEl.textContent = "HAPPY BIRTHDAY JANAH";
-  }
-
-  remaining--;
-}, 1000);
 
 const canvas = document.getElementById("fireworks");
 const ctx = canvas.getContext("2d");
@@ -121,7 +107,8 @@ function resize() {
 resize();
 window.onresize = resize;
 
-const fireworks = [];
+let fireworks = [];
+let animateFireworks = true;
 
 function Firework() {
   this.x = Math.random() * canvas.width;
@@ -143,26 +130,98 @@ function Firework() {
 function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  fireworks.forEach((fw, i) => {
-    fw.particles.forEach(p => {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
-      ctx.fillStyle = fw.color;
-      ctx.fill();
-      p.x += Math.cos(p.angle) * p.speed;
-      p.y += Math.sin(p.angle) * p.speed;
-      p.life--;
-    });
+  if (animateFireworks) {
+    fireworks.forEach((fw, i) => {
+      fw.particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+        ctx.fillStyle = fw.color;
+        ctx.fill();
+        p.x += Math.cos(p.angle) * p.speed;
+        p.y += Math.sin(p.angle) * p.speed;
+        p.life--;
+      });
 
-    fw.particles = fw.particles.filter(p => p.life > 0);
-    if (!fw.particles.length) fireworks.splice(i, 1);
-  });
+      fw.particles = fw.particles.filter(p => p.life > 0);
+      if (!fw.particles.length) fireworks.splice(i, 1);
+    });
+  }
 
   requestAnimationFrame(animate);
 }
 
-setInterval(() => fireworks.push(new Firework()), 800);
+setInterval(() => {
+  if (animateFireworks) fireworks.push(new Firework());
+}, 800);
+
 animate();
+
+// Countdown timer
+const timer = setInterval(() => {
+  const minutes = Math.floor(remaining / 60);
+  const seconds = remaining % 60;
+
+  countdownEl.textContent = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+
+  if (remaining <= 0) {
+    clearInterval(timer);
+    countdownEl.textContent = "HAPPY BIRTHDAY JANAH";
+
+    // Stop fireworks and song
+    animateFireworks = false;
+    document.getElementById("song").pause();
+
+    // Launch confetti
+    launchConfetti();
+  }
+
+  remaining--;
+}, 1000);
+
+// Confetti effect
+function launchConfetti() {
+  const confettiCount = 150;
+  const confetti = [];
+
+  for (let i = 0; i < confettiCount; i++) {
+    confetti.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * -canvas.height,
+      r: Math.random() * 6 + 4,
+      d: Math.random() * confettiCount,
+      color: `hsl(${Math.random() * 360}, 100%, 70%)`,
+      tilt: Math.random() * 10 - 10
+    });
+  }
+
+  function drawConfetti() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    confetti.forEach((c, i) => {
+      ctx.beginPath();
+      ctx.lineWidth = c.r / 2;
+      ctx.strokeStyle = c.color;
+      ctx.moveTo(c.x + c.tilt + c.r / 4, c.y);
+      ctx.lineTo(c.x + c.tilt, c.y + c.r);
+      ctx.stroke();
+    });
+
+    updateConfetti();
+    requestAnimationFrame(drawConfetti);
+  }
+
+  function updateConfetti() {
+    confetti.forEach(c => {
+      c.y += 2;
+      c.tilt += 0.5;
+      if (c.y > canvas.height) {
+        c.y = -10;
+        c.x = Math.random() * canvas.width;
+      }
+    });
+  }
+
+  drawConfetti();
+}
 </script>
 
 </body>
