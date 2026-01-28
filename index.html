@@ -105,7 +105,7 @@ const messageEl = document.getElementById("message");
 });
 
 // Countdown timer: 1 minute
-let remaining = 60; // 60 seconds = 1 minute
+let remaining = 60; // 60 seconds
 const countdownEl = document.getElementById("countdown");
 
 const canvas = document.getElementById("fireworks");
@@ -218,14 +218,18 @@ const timer = setInterval(() => {
     clearInterval(timer);
     countdownEl.textContent = "HAPPY BIRTHDAY JANAH";
 
-    // Animate message letters
+    // Animate message letters for birthday text with spaces
     messageEl.textContent = "";
     [...messageText].forEach((char, i) => {
       const span = document.createElement("span");
-      span.textContent = char;
       span.className = "letter";
       span.style.animation = `pop 0.05s forwards`;
       span.style.animationDelay = `${i*0.05}s`;
+      if (char === " ") {
+        span.innerHTML = "&nbsp;"; // keep spaces
+      } else {
+        span.textContent = char;
+      }
       messageEl.appendChild(span);
     });
 
