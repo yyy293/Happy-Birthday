@@ -46,6 +46,7 @@
     opacity: 0;
     transform: translateY(20px);
     animation: pop 0.5s forwards;
+    position: relative;
   }
 
   @keyframes pop {
@@ -182,7 +183,7 @@ function animate() {
       const flicker = Math.random() * 0.5;
       ctx.beginPath();
       ctx.arc(s.x, s.y, s.radius + flicker, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255,255,200,${s.alpha})`;
+      ctx.fillStyle = `rgba(255,105,180,${s.alpha})`; // pink sparkle
       ctx.fill();
       s.x += s.vx;
       s.y += s.vy;
@@ -194,11 +195,18 @@ function animate() {
     if(sparkles.length<100) for(let i=0;i<3;i++) sparkles.push(new Sparkle());
   }
 
-  // Flicker message letters independently
+  // Pink sparkling letters
   document.querySelectorAll('.message span').forEach(letter => {
     const flicker = 0.5 + Math.random()*0.5;
-    letter.style.color = `rgba(255, 105, 180, ${flicker})`; // pink
-    letter.style.textShadow = `0 0 ${5*flicker}px #ff69b4, 0 0 ${10*flicker}px #ff69b4, 0 0 ${15*flicker}px #ff1493`;
+    letter.style.color = `rgba(255,105,180,${flicker})`;
+    letter.style.textShadow = `0 0 ${5*flicker}px #ff69b4, 0 0 ${10*flicker}px #ff1493, 0 0 ${15*flicker}px #ff69b4`;
+    
+    // Optional tiny sparkle trail
+    const rect = letter.getBoundingClientRect();
+    ctx.beginPath();
+    ctx.arc(rect.left + rect.width/2, rect.top + rect.height/2, Math.random()*1.5, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(255,105,180,${flicker})`;
+    ctx.fill();
   });
 
   requestAnimationFrame(animate);
