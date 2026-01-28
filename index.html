@@ -58,6 +58,17 @@
     letter-spacing: 2px;
   }
 
+  .message {
+    font-size: 1.2em;
+    margin-top: 20px;
+    letter-spacing: 1px;
+  }
+
+  .glow {
+    color: #fff7aa;
+    text-shadow: 0 0 5px #fff7aa, 0 0 10px #fff7aa, 0 0 15px #ffd700;
+  }
+
   @keyframes fadeIn {
     from { opacity: 0; transform: scale(0.9); }
     to { opacity: 1; transform: scale(1); }
@@ -72,9 +83,10 @@
 <div class="card">
   <h1 id="name"></h1>
   <div class="countdown" id="countdown"></div>
+  <div class="message" id="message"></div>
 </div>
 
-<audio id="song" src="happy-birthday-janah.mp3" autoplay muted loop></audio>
+<audio id="song" src="happy-birthday.mp3" autoplay muted loop></audio>
 
 <script>
 document.body.addEventListener("click", () => {
@@ -84,8 +96,11 @@ document.body.addEventListener("click", () => {
 }, { once: true });
 
 const nameText = "JANAH";
+const messageText = "May you shine brighter than these fireworks and your year be full of joy and laughter!";
 const nameEl = document.getElementById("name");
+const messageEl = document.getElementById("message");
 
+// Animate name letter by letter
 [...nameText].forEach((char, i) => {
   const span = document.createElement("span");
   span.textContent = char;
@@ -94,8 +109,8 @@ const nameEl = document.getElementById("name");
   nameEl.appendChild(span);
 });
 
-// Timer set to 2 minutes
-let remaining = 2 * 60;
+// Countdown timer: 1 minute
+let remaining = 1 * 60;
 const countdownEl = document.getElementById("countdown");
 
 const canvas = document.getElementById("fireworks");
@@ -119,7 +134,6 @@ function Firework() {
   this.y = Math.random() * canvas.height / 2;
   this.color = `hsl(${Math.random() * 360},100%,70%)`;
   this.particles = [];
-
   for (let i = 0; i < 60; i++) {
     this.particles.push({
       x: this.x,
@@ -160,117 +174,108 @@ function animate() {
         p.y += Math.sin(p.angle) * p.speed;
         p.life--;
       });
-
       fw.particles = fw.particles.filter(p => p.life > 0);
       if (!fw.particles.length) fireworks.splice(i, 1);
     });
   }
 
-  // Sparkler effect with shimmer
+  // Sparkler effect
   if (animateSparkles) {
     sparkles.forEach((s, i) => {
-      // flicker effect
       const flicker = Math.random() * 0.5;
       ctx.beginPath();
       ctx.arc(s.x, s.y, s.radius + flicker, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255, 255, 200, ${s.alpha})`;
+      ctx.fillStyle = `rgba(255,255,200,${s.alpha})`;
       ctx.fill();
       s.x += s.vx;
       s.y += s.vy;
       s.alpha -= 0.02;
-      s.radius = s.baseRadius + Math.sin(Date.now() * 0.02) * 1; // shimmer radius
+      s.radius = s.baseRadius + Math.sin(Date.now()*0.02)*1;
       s.life--;
-      if (s.life <= 0 || s.alpha <= 0) sparkles.splice(i, 1);
+      if(s.life<=0 || s.alpha<=0) sparkles.splice(i,1);
     });
-
-    // Add new sparkles continuously while animating
-    if (sparkles.length < 100) {
-      for (let i = 0; i < 3; i++) sparkles.push(new Sparkle());
-    }
+    if(sparkles.length<100) for(let i=0;i<3;i++) sparkles.push(new Sparkle());
   }
 
   requestAnimationFrame(animate);
 }
 
 setInterval(() => {
-  if (animateFireworks) fireworks.push(new Firework());
+  if(animateFireworks) fireworks.push(new Firework());
 }, 800);
 
 animate();
 
-// Countdown timer
+// Countdown
 const timer = setInterval(() => {
-  const minutes = Math.floor(remaining / 60);
-  const seconds = remaining % 60;
+  const minutes = Math.floor(remaining/60);
+  const seconds = remaining%60;
+  countdownEl.textContent = `${minutes}:${seconds.toString().padStart(2,"0")}`;
 
-  countdownEl.textContent = `${minutes}:${seconds.toString().padStart(2, "0")}`;
-
-  if (remaining <= 0) {
+  if(remaining<=0){
     clearInterval(timer);
     countdownEl.textContent = "HAPPY BIRTHDAY JANAH";
+
+    // Animate message letter by letter with glow
+    messageEl.textContent = "";
+    [...messageText].forEach((char,i)=>{
+      const span = document.createElement("span");
+      span.textContent = char;
+      span.className = "letter glow";
+      span.style.animation = `pop 0.05s forwards`;
+      span.style.animationDelay = `${i*0.05}s`;
+      messageEl.appendChild(span);
+    });
 
     // Stop fireworks and song
     animateFireworks = false;
     document.getElementById("song").pause();
 
-    // Launch confetti for 8 seconds
+    // Launch confetti and sparkles
     launchConfetti(8000);
     animateSparkles = true;
-
-    // Stop sparkles after 8 seconds
-    setTimeout(() => animateSparkles = false, 8000);
+    setTimeout(()=>animateSparkles=false,8000);
   }
 
   remaining--;
-}, 1000);
+},1000);
 
 // Confetti effect
-function launchConfetti(duration) {
-  const confettiCount = 150;
-  const confetti = [];
-
-  for (let i = 0; i < confettiCount; i++) {
+function launchConfetti(duration){
+  const confettiCount=150;
+  const confetti=[];
+  for(let i=0;i<confettiCount;i++){
     confetti.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * -canvas.height,
-      r: Math.random() * 6 + 4,
-      d: Math.random() * confettiCount,
-      color: `hsl(${Math.random() * 360}, 100%, 70%)`,
-      tilt: Math.random() * 10 - 10
+      x:Math.random()*canvas.width,
+      y:Math.random()*-canvas.height,
+      r:Math.random()*6+4,
+      d:Math.random()*confettiCount,
+      color:`hsl(${Math.random()*360},100%,70%)`,
+      tilt:Math.random()*10-10
     });
   }
 
-  let startTime = null;
+  let startTime=null;
+  function drawConfetti(timestamp){
+    if(!startTime) startTime=timestamp;
+    const elapsed=timestamp-startTime;
 
-  function drawConfetti(timestamp) {
-    if (!startTime) startTime = timestamp;
-    const elapsed = timestamp - startTime;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    confetti.forEach(c => {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    confetti.forEach(c=>{
       ctx.beginPath();
-      ctx.lineWidth = c.r / 2;
-      ctx.strokeStyle = c.color;
-      ctx.moveTo(c.x + c.tilt + c.r / 4, c.y);
-      ctx.lineTo(c.x + c.tilt, c.y + c.r);
+      ctx.lineWidth=c.r/2;
+      ctx.strokeStyle=c.color;
+      ctx.moveTo(c.x+c.tilt+c.r/4,c.y);
+      ctx.lineTo(c.x+c.tilt,c.y+c.r);
       ctx.stroke();
-
-      c.y += 2;
-      c.tilt += 0.5;
-      if (c.y > canvas.height) {
-        c.y = -10;
-        c.x = Math.random() * canvas.width;
-      }
+      c.y+=2;
+      c.tilt+=0.5;
+      if(c.y>canvas.height){c.y=-10;c.x=Math.random()*canvas.width;}
     });
 
-    if (elapsed < duration) {
-      requestAnimationFrame(drawConfetti);
-    } else {
-      ctx.clearRect(0, 0, canvas.width, canvas.height); // remove confetti
-    }
+    if(elapsed<duration) requestAnimationFrame(drawConfetti);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
   }
-
   requestAnimationFrame(drawConfetti);
 }
 </script>
