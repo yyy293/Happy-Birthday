@@ -62,6 +62,7 @@
     font-size: 1.2em;
     margin-top: 20px;
     letter-spacing: 1px;
+    color: pink; /* Pink text */
   }
 
   @keyframes fadeIn {
@@ -196,8 +197,8 @@ function animate() {
   // Flicker message letters independently
   document.querySelectorAll('.message span').forEach(letter => {
     const flicker = 0.5 + Math.random()*0.5;
-    letter.style.color = `rgba(255, 247, 170, ${flicker})`;
-    letter.style.textShadow = `0 0 ${5*flicker}px #fff7aa, 0 0 ${10*flicker}px #fff7aa, 0 0 ${15*flicker}px #ffd700`;
+    letter.style.color = `rgba(255, 105, 180, ${flicker})`; // pink
+    letter.style.textShadow = `0 0 ${5*flicker}px #ff69b4, 0 0 ${10*flicker}px #ff69b4, 0 0 ${15*flicker}px #ff1493`;
   });
 
   requestAnimationFrame(animate);
@@ -228,16 +229,16 @@ const timer = setInterval(() => {
       span.style.animationDelay = `${i*0.05}s`;
       if (char === " ") {
         span.innerHTML = "&nbsp;";
-        span.style.marginRight = "0.2em"; // keep words separated
+        span.style.marginRight = "0.2em";
       } else {
         span.textContent = char;
       }
       messageEl.appendChild(span);
     });
 
-    // Stop fireworks and song
+    // Stop fireworks and play audio if not playing
     animateFireworks = false;
-    song.pause();
+    song.play().catch(err => console.log("Audio play blocked:", err));
 
     // Launch confetti and sparkles
     launchConfetti(8000);
